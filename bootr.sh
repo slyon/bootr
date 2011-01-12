@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# Switch to miniboot
 sh /boot/bootr/bin/init.sh
+
 # Default OS
 # alternatives: 'webos', 'shr'
 OS='webos'

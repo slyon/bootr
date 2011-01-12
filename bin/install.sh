@@ -21,7 +21,9 @@ then
 	echo 'Installing Bootr'
 	cd /boot/sbin
 	ln -sf init.bootr init
+    sync
 	echo '  [OK] Linked init -> init.bootr'
+	mount -o remount,ro /boot
 	echo 'Done. You can now reboot into Bootr.'
 else
 	echo ''
