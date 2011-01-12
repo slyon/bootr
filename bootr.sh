@@ -19,7 +19,7 @@ while true;
 
     #Power Button Released
     #FIXME: this is ugly
-    if [[ `echo $event | sed 's/^.*006b0.*$/true/g'` == 'true'  ]]
+    if [[ `echo $event | sed 's/^.*006b00010.*$/true/g'` == 'true'  ]]
     then
         bzcat /boot/bootr/data/booting.fbz > /dev/fb0
         mount -o remount,rw /boot
@@ -41,7 +41,7 @@ while true;
 
     #VolumeUp Button Released
     #FIXME: this is ugly
-    if [[ `echo $event | sed 's/^.*00730.*$/true/g'` == 'true'  ]]
+    if [[ `echo $event | sed 's/^.*007300010.*$/true/g'` == 'true'  ]]
     then
         bzcat /boot/bootr/data/webos.fbz > /dev/fb0
         OS='webos'
@@ -50,7 +50,7 @@ while true;
 
     #VolumeDown Button Released
     #FIXME: this is ugly
-    if [[ `echo $event | sed 's/^.*00720.*$/true/g'` == 'true'  ]]
+    if [[ `echo $event | sed 's/^.*007200010.*$/true/g'` == 'true'  ]]
     then
         bzcat /boot/bootr/data/shr.fbz > /dev/fb0
         OS='shr'
