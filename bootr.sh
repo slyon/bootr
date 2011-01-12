@@ -8,9 +8,9 @@ OS='webos'
 
 if [[ $OS == 'shr'  ]]
 then
-    cat /boot/bootr/data/shr.fb > /dev/fb0
+    bzcat /boot/bootr/data/shr.fbz > /dev/fb0
 else
-    cat /boot/bootr/data/webos.fb > /dev/fb0
+    bzcat /boot/bootr/data/webos.fbz > /dev/fb0
 fi
 
 while true;
@@ -21,7 +21,7 @@ while true;
     #FIXME: this is ugly
     if [[ `echo $event | sed 's/^.*006b0.*$/true/g'` == 'true'  ]]
     then
-        cat /boot/bootr/data/booting.fb > /dev/fb0
+        bzcat /boot/bootr/data/booting.fbz > /dev/fb0
         mount -o remount,rw /boot
         cd /boot/sbin
 
@@ -43,7 +43,7 @@ while true;
     #FIXME: this is ugly
     if [[ `echo $event | sed 's/^.*00730.*$/true/g'` == 'true'  ]]
     then
-        cat /boot/bootr/data/webos.fb > /dev/fb0
+        bzcat /boot/bootr/data/webos.fbz > /dev/fb0
         OS='webos'
         continue
     fi
@@ -52,7 +52,7 @@ while true;
     #FIXME: this is ugly
     if [[ `echo $event | sed 's/^.*00720.*$/true/g'` == 'true'  ]]
     then
-        cat /boot/bootr/data/shr.fb > /dev/fb0
+        bzcat /boot/bootr/data/shr.fbz > /dev/fb0
         OS='shr'
         continue
     fi
