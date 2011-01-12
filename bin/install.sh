@@ -2,8 +2,27 @@
 
 if [[ $1 == 'install' ]]
 then
-	#doit
-	echo 'Doing it...'
+	mount -o remount,rw /boot
+	echo 'Backing up /boot/sbin/init to /boot/sbin/init.backup.bootr'
+	if [[ -x /boot/sbin/init.backup.bootr ]]
+	then
+		echo '  [OK] Backup already exists.'
+	else
+		mv /boot/sbin/init /boot/sbin/init.backup.bootr
+		echo '  [OK] Saved /boot/sbin/init.backup.bootr'
+	fi
+	echo 'Copying bootscripts'
+	cp /boot/bootr/bootscripts/init.bootr /boot/sbin
+	echo '  [OK] Saved /boot/sbin/init.bootr'
+	cp /boot/bootr/bootscripts/init.webos.bootr /boot/sbin
+	echo '  [OK] Saved /boot/sbin/init.webos.bootr'
+	cp /boot/bootr/bootscripts/init.fso.bootr /boot/sbin
+	echo '  [OK] Saved /boot/sbin/init.fso.bootr'
+	echo 'Installing Bootr'
+	cd /boot/sbin
+	ln -sf init.bootr init
+	echo '  [OK] Linked init -> init.bootr'
+	echo 'Done. You can now reboot into Bootr.'
 else
 	echo ''
 	echo '  *** This Script will install Bootr to your Palm Pre ***'
