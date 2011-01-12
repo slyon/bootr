@@ -27,11 +27,11 @@ while true;
 
         if [[ $OS == 'shr' ]]
         then
-            ln -sf init.fso init
+            ln -sf init.fso.bootr init
             cd ..
             ln -sf uImage-palmpre.bin uImage
         else
-            ln -sf init.webos init
+            ln -sf init.webos.bootr init
             cd ..
             ln -sf uImage-2.6.24-palm-joplin-3430 uImage
         fi
