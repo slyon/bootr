@@ -45,8 +45,7 @@ mknod /dev/mmcblk0p1 b 179 1
 mknod /dev/mmcblk0p2 b 179 2
 mknod /dev/mmcblk0p3 b 179 3
 
-mount -o remount,rw /
-ln -sf /sbin/init.bootr /sbin/init
+sh /bootr/bin/set-bootr.sh
 
 lvm.static vgscan --ignorelockingfailure
 lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-fso
