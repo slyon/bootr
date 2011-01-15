@@ -29,7 +29,7 @@ while true;
         then
             ln -sf init.fso.bootr init
             cd ..
-            ln -sf uImage-palmpre.bin uImage
+            ln -sf uImage-palmpre2.bin uImage
         else
             ln -sf init.webos.bootr init
             cd ..
