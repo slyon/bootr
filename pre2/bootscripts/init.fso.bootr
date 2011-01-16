@@ -44,6 +44,18 @@ mknod /dev/mmcblk0 b 179 0
 mknod /dev/mmcblk0p1 b 179 1
 mknod /dev/mmcblk0p2 b 179 2
 mknod /dev/mmcblk0p3 b 179 3
+mknod /dev/mmcblk0p4 b 179 4
+mknod /dev/mmcblk0p5 b 179 5
+mknod /dev/mmcblk0p6 b 179 6
+mknod /dev/mmcblk0p7 b 179 7
+mknod /dev/mmcblk0p8 b 179 8
+mknod /dev/mmcblk0p9 b 179 9
+mknod /dev/mmcblk0p10 b 179 10
+mknod /dev/mmcblk0p11 b 179 11
+mknod /dev/mmcblk0p12 b 179 12
+mknod /dev/mmcblk0p13 b 179 13
+mknod /dev/mmcblk0p14 b 179 14
+mknod /dev/mmcblk0p15 b 179 15
 
 sh /bootr/bin/set-bootr.sh
 
