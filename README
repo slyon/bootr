@@ -11,8 +11,8 @@ A dual-boot solution for the Palm Pre.
 1. Installation
     $ novaterm
     $ mount -o remount,rw /boot
-    $ wget https://github.com/downloads/slyon/bootr/bootr-palmpre[2]_0.1.tar.gz
-    $ tar -C /boot -xzvf bootr-palmpre[2]_0.1.tar.gz
+    $ wget https://github.com/downloads/slyon/bootr/bootr-palmpre[2]_[VERSION].tar.gz
+    $ tar -C /boot -xzvf bootr-palmpre[2]_[VERSION].tar.gz
     $ sh /boot/bootr/bin/install.sh
 
 2. Usage
