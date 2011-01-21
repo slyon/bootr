@@ -5,7 +5,7 @@
 | |__)  ) |_| | |_| || |_| |    
 |______/ \___/ \___/  \__)_|    
 
-A dual-boot solution for the Palm Pre.
+A dual-boot solution for the Palm Pre (Plus/2).
 ================================================================================
 
 1. Installation
@@ -23,3 +23,13 @@ A dual-boot solution for the Palm Pre.
 
     After you have selected the OS, you can boot it by:
     * pressing the Power key
+
+3. Troubleshooting
+    If something goes wrong wrt. installation you can do the following steps
+    and you should be back to your WebOS enviroment:
+    * boot your device into recovery mode (press VolumeUp key and insert USB cable)
+    * novaterm
+    * hit [enter] once, to get to the bootie prompt
+    * setenv bootfile uImage-2.6.24-palm-joplin-3430
+    * setenv bootargs "root=/dev/mmcblk0p2 rootwait ro init=/sbin/init.backup.bootr"
+    * fsboot
