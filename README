@@ -9,6 +9,12 @@ A dual-boot solution for the Palm Pre (Plus/2).
 ================================================================================
 
 1. Installation
+1.1 Automatic mode:
+    Use the fso-installer Makefile. It will install SHR and Bootr to you Pre.
+    * http://trac.shr-project.org/trac/wiki/PalmPreInstall
+    * http://git.freesmartphone.org/?p=utilities.git;a=tree;f=palmpre/fso-installer
+
+1.2 Manual mode:
     $ novaterm
     $ mount -o remount,rw /boot
     $ wget https://github.com/downloads/slyon/bootr/bootr-palmpre[2]_[VERSION].tar.gz
