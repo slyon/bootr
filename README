@@ -33,3 +33,7 @@ A dual-boot solution for the Palm Pre (Plus/2).
     * setenv bootfile uImage-2.6.24-palm-joplin-3430
     * setenv bootargs "root=/dev/mmcblk0p2 rootwait ro init=/sbin/init.backup.bootr"
     * fsboot
+
+4. Rebootr utility
+    rebootr.sh is a tool you can use to select the OS you will boot into next.
+    * /boot/bootr/bin/rebootr.sh [webos|shr]
