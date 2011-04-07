@@ -58,6 +58,7 @@ mknod /dev/mmcblk0p14 b 179 14
 mknod /dev/mmcblk0p15 b 179 15
 
 sh /bootr/bin/set-bootr.sh
+sync
 
 lvm.static vgscan --ignorelockingfailure
 lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-fso
