@@ -1,0 +1,38 @@
+--- .orig/boot/sbin/init.android.bootr
++++ /boot/sbin/init.android.bootr
+@@ -57,14 +57,23 @@
+ mknod /dev/mmcblk0p14 b 179 14
+ mknod /dev/mmcblk0p15 b 179 15
+ 
++# disable kernel messages on screen
++#echo "0" > /proc/sys/kernel/printk
++
++sh /bootr/bin/set-bootr.sh
++
+ lvm.static vgscan --ignorelockingfailure
+-lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-root
++lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-media
+ 
+ # May need to say "don't update mtab" option below
+-mount -o ro /dev/mapper/store-root /realroot
++mount -t vfat -o rw /dev/mapper/store-media /realroot
+ 
+-/sbin/pivot_root /realroot /realroot/boot
++# mount boot.ext3 from 'usb partition'/android
++mount -o loop /realroot/android/boot.ext3 /realroot/android/mnt
+ 
++/sbin/pivot_root /realroot/android/mnt /realroot/android/mnt/boot
++#mount --move /boot/realroot /mnt/sdcard
++
+ # Recommended:
+ 
+ cd /
+@@ -80,4 +89,7 @@
+ 
+ export EARLY_BOOT_STOP=`date -U`
+ 
+-exec /sbin/init
++# FIXME: setup usb net in nfs boot is parsed from bootargs
++/sbin/ifconfig usb0 192.168.0.202
++
++exec /init 1>/init.log
