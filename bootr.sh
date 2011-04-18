@@ -14,7 +14,7 @@ check_hw(){
             hw=pre2
             ;;
         *)
-            echo "Unupported Pre model. Exiting..."
+            echo "Unsupported Pre model. Exiting..."
             ;;
     esac
 }
