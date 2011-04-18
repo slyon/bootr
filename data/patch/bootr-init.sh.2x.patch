@@ -1,0 +1,14 @@
+--- .orig/boot/bootr/bin/init.sh
++++ /boot/bootr/bin/init.sh
+@@ -59,7 +59,7 @@
+ novacomd &
+ powerd-lite &
+ 
+-run-parts /etc/miniboot.d
+-	
+-# Spin relaunching login
+-while true; do getty 115200 console; done
++# Bind mount of Optware if installed
++if [ -f /etc/event.d/org.webosinternals.optware ]; then
++    mount --bind /var/opt /opt
++fi

@@ -1,0 +1,8 @@
+--- .orig/boot/sbin/init.bootr
++++ /boot/sbin/init.bootr
+@@ -80,4 +68,4 @@
+ 
+ export EARLY_BOOT_STOP=`date -U`
+ 
+-exec /sbin/init
++exec /boot/bootr/bootr.sh

@@ -1,0 +1,18 @@
+--- .orig/boot/sbin/init.shr.bootr
++++ /boot/sbin/init.shr.bootr
+@@ -57,11 +57,13 @@
+ mknod /dev/mmcblk0p14 b 179 14
+ mknod /dev/mmcblk0p15 b 179 15
+ 
++sh /bootr/bin/set-bootr.sh
++
+ lvm.static vgscan --ignorelockingfailure
+-lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-root
++lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-fso
+ 
+ # May need to say "don't update mtab" option below
+-mount -o ro /dev/mapper/store-root /realroot
++mount -o rw /dev/mapper/store-fso /realroot
+ 
+ /sbin/pivot_root /realroot /realroot/boot
+ 
