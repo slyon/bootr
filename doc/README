@@ -1,0 +1,45 @@
+ ______                         
+(____  \              _         
+ ____)  ) ___   ___ _| |_  ____ 
+|  __  ( / _ \ / _ (_   _)/ ___)
+| |__)  ) |_| | |_| || |_| |    
+|______/ \___/ \___/  \__)_|    
+
+A dual-boot solution for the Palm Pre (Plus/2).
+================================================================================
+
+1. Installation
+1.1 Automatic mode:
+    Use the fso-installer Makefile. It will install SHR and Bootr to you Pre.
+    * http://trac.shr-project.org/trac/wiki/Devices/PalmPre/InstallGuide
+    * http://git.freesmartphone.org/?p=utilities.git;a=tree;f=palmpre/fso-installer
+
+1.2 Manual mode:
+    $ novaterm
+    $ mount -o remount,rw /boot
+    $ wget https://github.com/downloads/slyon/bootr/bootr-palmpre[2]_[VERSION].tar.gz
+    $ tar -C /boot -xzvf bootr-palmpre[2]_[VERSION].tar.gz
+    $ sh /boot/bootr/bin/install.sh
+
+2. Usage
+    Bootr will ask you which operating system to boot on every boot up.
+    You can then select one by:
+    * pressing VolumeUp key or
+    * pressing VolumeDown key
+
+    After you have selected the OS, you can boot it by:
+    * pressing the Power key
+
+3. Troubleshooting
+    If something goes wrong wrt. installation you can do the following steps
+    and you should be back to your WebOS enviroment:
+    * boot your device into recovery mode (press VolumeUp key and insert USB cable)
+    * novaterm
+    * hit [enter] once, to get to the bootie prompt
+    * setenv bootfile uImage-2.6.24-palm-joplin-3430
+    * setenv bootargs "root=/dev/mmcblk0p2 rootwait ro init=/sbin/init.backup.bootr"
+    * fsboot
+
+4. Rebootr utility
+    rebootr.sh is a tool you can use to select the OS you will boot into next.
+    * /boot/bootr/bin/rebootr.sh [webos|shr]
