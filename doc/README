@@ -20,7 +20,7 @@ A dual-boot solution for the Palm Pre (Plus/2).
 1.2 Manual mode:
     On host:
     # wget https://github.com/downloads/slyon/bootr/bootr-palmpre[2]_[VERSION].tar.gz
-    # novacom put file://media/internal/bootr-palmpre[2]_[VERSION].tar.gz
+    # novacom put file://media/internal/bootr-palmpre[2]_[VERSION].tar.gz < bootr-palmpre[2]_[VERSION].tar.gz
     # novaterm
     On device:
     $ mount -o remount,rw /boot
