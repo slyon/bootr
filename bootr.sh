@@ -103,6 +103,8 @@ while true;
     select_os 007300010 "$os_installed_rev" left
     #VolumeDown Button Released
     select_os 007200010 "$os_installed" right
+    #Center Button Released
+    select_os 00e800010 "$os_installed" right
 done
 
 exit 0
