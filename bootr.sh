@@ -93,8 +93,8 @@ show_fbz $OS
 while true;
     do
     event=`hexdump -e '1/1 "%.2x"' /dev/input/event1 -n 16`
-    #Power Button Released
-    if [ "`echo $event | grep 006b00010`" != "" ]; then
+    #Power Button Released or MuteSwitch moved to ON
+    if [ "`echo $event | grep 006b00010`" != "" -o "`echo $event | grep 5000500010`" != "" ]; then
         . /boot/bootr/os/$hw/$OS
         change_and_reboot
         break
