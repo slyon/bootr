@@ -1,9 +1,18 @@
 --- .orig/boot/sbin/init.android.bootr
 +++ /boot/sbin/init.android.bootr
-@@ -57,14 +57,23 @@
+@@ -57,14 +57,32 @@
  mknod /dev/mmcblk0p14 b 179 14
  mknod /dev/mmcblk0p15 b 179 15
  
++mknod /dev/loop0 b 7 0
++mknod /dev/loop1 b 7 1
++mknod /dev/loop2 b 7 2
++mknod /dev/loop3 b 7 3
++mknod /dev/loop4 b 7 4
++mknod /dev/loop5 b 7 5
++mknod /dev/loop6 b 7 6
++mknod /dev/loop7 b 7 7
++
 +# disable kernel messages on screen
 +#echo "0" > /proc/sys/kernel/printk
 +
@@ -27,7 +36,7 @@
  # Recommended:
  
  cd /
-@@ -80,4 +89,7 @@
+@@ -80,4 +98,7 @@
  
  export EARLY_BOOT_STOP=`date -U`
  
