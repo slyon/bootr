@@ -39,6 +39,7 @@ select_os(){
 }
 
 change_and_reboot(){
+    show_fbz $OS
     do_led center 500
     pong_fb "20 30 60 80 100 120 120 80 100 120 80 90 100 110 120 90 95 100 105 110 115 120 105 110 115 120 110 113 115 118 120" 750
     mount -o remount,rw /boot
@@ -90,11 +91,13 @@ set_lcd 30
 check_os_and_kernel
 show_fbz $OS
 
+sh /boot/bootr/bin/timeout.sh &
+
 while true;
     do
     event=`hexdump -e '1/1 "%.2x"' /dev/input/event1 -n 16`
-    #Power Button Released or MuteSwitch moved to ON
-    if [ "`echo $event | grep 006b00010`" != "" -o "`echo $event | grep 5000500010`" != "" ]; then
+    #Power Button Released or MuteSwitch to ON
+    if [ "`echo $event | grep 006b00010`" != "" -o "`echo $event | grep 5000500010`" != "" -o -e /media/ram/autobootr ]; then
         . /boot/bootr/os/$hw/$OS
         change_and_reboot
         break
