@@ -9,7 +9,7 @@ case $hw in
         hw=pre2
         ;;
     *)
-        echo "Don't supported Pre model. Exiting..."
+        echo "Unsupported Pre model. Exiting..."
         exit
         ;;
 esac
