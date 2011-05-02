@@ -1,6 +1,6 @@
 --- .orig/boot/sbin/init.android.bootr
 +++ /boot/sbin/init.android.bootr
-@@ -45,14 +45,32 @@
+@@ -45,14 +45,42 @@
  mknod /dev/mmcblk0p2 b 179 2
  mknod /dev/mmcblk0p3 b 179 3
  
@@ -20,18 +20,29 @@
 +
  lvm.static vgscan --ignorelockingfailure
 -lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-root
-+lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-media
++lvm.static lvs /dev/store/aop >/dev/null 2>/dev/null || false
++if [ $? -eq 0 ]; then
++    lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-aop
  
- # May need to say "don't update mtab" option below
+-# May need to say "don't update mtab" option below
 -mount -o ro /dev/mapper/store-root /realroot
-+mount -t vfat -o rw /dev/mapper/store-media /realroot
++    # May need to say "don't update mtab" option below
++    mount -o rw /dev/mapper/store-aop /realroot
  
 -/sbin/pivot_root /realroot /realroot/boot
-+# mount boot.ext3 from 'usb partition'/android
-+mount -o loop /realroot/android/boot.ext3 /realroot/android/mnt
++    /sbin/pivot_root /realroot /realroot/boot
++else
++    lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-media
  
-+/sbin/pivot_root /realroot/android/mnt /realroot/android/mnt/boot
-+#mount --move /boot/realroot /mnt/sdcard
++    # May need to say "don't update mtab" option below
++    mount -t vfat -o rw /dev/mapper/store-media /realroot
++
++    # mount boot.ext3 from 'usb partition'/android
++    mount -o loop /realroot/android/boot.ext3 /realroot/android/mix
++
++    /sbin/pivot_root /realroot/android/mix /realroot/android/mix/boot
++    mount --move /boot/realroot /mnt/sdcard
++fi
 +
  # Recommended:
  
