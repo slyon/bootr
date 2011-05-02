@@ -1,6 +1,7 @@
 --- .orig/boot/sbin/init.shr.bootr
 +++ /boot/sbin/init.shr.bootr
-@@ -57,13 +57,38 @@
+@@ -56,18 +56,42 @@
+ mknod /dev/mmcblk0p13 b 179 13
  mknod /dev/mmcblk0p14 b 179 14
  mknod /dev/mmcblk0p15 b 179 15
  
@@ -30,16 +31,20 @@
 +    /sbin/pivot_root /realroot /realroot/boot
 +else
 +    lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-media
-+
+ 
+-# Recommended:
 +    # May need to say "don't update mtab" option below
 +    mount -t vfat -o rw /dev/mapper/store-media /realroot
-+
+ 
 +    # mount boot.ext3 from 'usb partition'/android
 +    mount -o loop /realroot/shr/rootfs.ext3 /realroot/shr/mnt
 +
 +    /sbin/pivot_root /realroot/shr/mnt /realroot/shr/mnt/boot
 +    #mount --move /boot/realroot /mnt/sdcard
 +fi
++
++# Recommended:
+ cd /
  
- # Recommended:
- 
+ # Now, if you want to umount everything to let the normal scripting handle
+ # things:
