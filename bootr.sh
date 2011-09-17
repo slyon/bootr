@@ -13,14 +13,23 @@ check_hw(){
         "Sirloin OMAP3630 board")
             hw=pre2
             ;;
+        "TENDERLOIN")
+            hw=touchpad
+            export HD=1
+            ;;
         *)
-            echo "Unsupported Pre model. Exiting..."
+            echo "Unsupported Device. Exiting..."
+            exit
             ;;
     esac
 }
 
 show_fbz(){
+    if [ "$HD" = "1" ]; then
+        bzcat /boot/bootr/data/${1}HD.fbz > /dev/fb0
+    else
         bzcat /boot/bootr/data/$1.fbz > /dev/fb0
+    fi
 }
 
 select_os(){
@@ -73,6 +82,7 @@ do_led(){
 
 pong_fb(){
     for i in $1 ; do
+        if [ "$HD" = "1" ]; then i=$(($i*2)); fi
         echo 0,$i >/sys/class/graphics/fb0/pan
         w=$2
         while [ $w -gt 0 ]; do
@@ -93,21 +103,38 @@ show_fbz $OS
 
 sh /boot/bootr/bin/timeout.sh &
 
-while true;
-    do
-    event=`hexdump -e '1/1 "%.2x"' /dev/input/event1 -n 16`
-    #Power Button Released or MuteSwitch to ON
-    if [ "`echo $event | grep 006b00010`" != "" -o "`echo $event | grep 5000500010`" != "" -o -e /media/ram/autobootr ]; then
-        . /boot/bootr/os/$hw/$OS
-        change_and_reboot
-        break
-    fi
-    #VolumeUp Button Released
-    select_os 007300010 "$os_installed_rev" left
-    #VolumeDown Button Released
-    select_os 007200010 "$os_installed" right
-    #Center Button Released
-    select_os 00e800010 "$os_installed" right
-done
+if [ "$hw" = "touchpad" ]; then
+    while true;
+        do
+        event=`hexdump -e '1/1 "%.2x"' /dev/input/event0 -n 16`
+        #Home Button Released
+        if [ "`echo $event | grep HEXNUMFORTOUCHPADHOME`" != "" -o -e /media/ram/autobootr ]; then
+            . /boot/bootr/os/$hw/$OS
+            change_and_reboot
+            break
+        fi
+        #VolumeUp Button Released
+        select_os HEXNUMFORTOUCHPADVOLUP "$os_installed_rev" left
+        #VolumeDown Button Released
+        select_os HEXNUMFORTOUCHPADVOLDOWN "$os_installed" right
+    done
+else
+    while true;
+        do
+        event=`hexdump -e '1/1 "%.2x"' /dev/input/event1 -n 16`
+        #Power Button Released or MuteSwitch moved to ON
+        if [ "`echo $event | grep 006b00010`" != "" -o "`echo $event | grep 5000500010`" != "" -o -e /media/ram/autobootr ]; then
+            . /boot/bootr/os/$hw/$OS
+            change_and_reboot
+            break
+        fi
+        #VolumeUp Button Released
+        select_os 007300010 "$os_installed_rev" left
+        #VolumeDown Button Released
+        select_os 007200010 "$os_installed" right
+        #Center Button Released
+        select_os 00e800010 "$os_installed" right
+    done
+fi
 
 exit 0

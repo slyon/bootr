@@ -1,0 +1,58 @@
+--- .orig/boot/sbin/init.android.bootr
++++ /boot/sbin/init.android.bootr
+@@ -57,13 +57,41 @@
+ mknod /dev/mmcblk0p14 b 179 14
+ mknod /dev/mmcblk0p15 b 179 15
+ 
+-lvm.static vgscan --ignorelockingfailure
+-lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-root
++mknod /dev/loop0 b 7 0
++mknod /dev/loop1 b 7 1
++mknod /dev/loop2 b 7 2
++mknod /dev/loop3 b 7 3
++mknod /dev/loop4 b 7 4
++mknod /dev/loop5 b 7 5
++mknod /dev/loop6 b 7 6
++mknod /dev/loop7 b 7 7
++
++# disable kernel messages on screen
++#echo "0" > /proc/sys/kernel/printk
+ 
+-# May need to say "don't update mtab" option below
+-mount -o ro /dev/mapper/store-root /realroot
++sh /bootr/bin/set-bootr.sh
+ 
+-/sbin/pivot_root /realroot /realroot/boot
++lvm.static vgscan --ignorelockingfailure
++lvm.static lvs /dev/store/aot >/dev/null 2>/dev/null || false
++if [ $? -eq 0 ]; then
++    lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-aot
++
++    # May need to say "don't update mtab" option below
++    mount -o rw /dev/mapper/store-aot /realroot
++
++    /sbin/pivot_root /realroot /realroot/boot
++else
++    lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-media
++
++    # May need to say "don't update mtab" option below
++    mount -t vfat -o rw /dev/mapper/store-media /realroot
++
++    # mount boot.ext3 from 'usb partition'/android
++    mount -o loop /realroot/android/boot.ext3 /realroot/android/mnt
++
++    /sbin/pivot_root /realroot/android/mnt /realroot/android/mnt/boot
++    mount --move /boot/realroot /mnt/sdcard
++fi
+ 
+ # Recommended:
+ 
+@@ -80,4 +108,7 @@
+ 
+ export EARLY_BOOT_STOP=`date -U`
+ 
+-exec /sbin/init
++# FIXME: setup usb net in nfs boot is parsed from bootargs
++/sbin/ifconfig usb0 192.168.0.202
++
++exec /init 1>/init.log

@@ -1,5 +1,25 @@
 #!/bin/sh
 
+check_hw(){
+    hw="`cat /proc/cpuinfo | grep Hardware | sed 's/.*: //'`"
+    case $hw in
+        "Sirloin OMAP3430 board")
+            hw=pre
+            ;;
+        "Sirloin OMAP3630 board")
+            hw=pre2
+            ;;
+        "TENDERLOIN")
+            hw=touchpad
+            HD=1
+            ;;
+        *)
+            echo "Unsupported Device. Exiting..."
+            exit
+        ;;
+    esac
+}
+
 check_error(){
     if [ $? -ne 0 ]; then
         echo "  [ERROR] ${1} failed. Exiting..."; exit
@@ -33,7 +53,9 @@ restore_backup(){
 }
 
 create_bootr_inits(){
-    if [ "`cat /etc/palm-build-info | grep 'OS 1.'`" != "" ]; then veros=1x; else veros=2x; fi
+    if [ "`cat /etc/palm-build-info | grep 'OS 1.'`" != "" ]; then veros=1x
+    elif [ "`cat /etc/palm-build-info | grep 'OS 2.'`" != "" ]; then veros=2x
+    else veros=3x; fi
     echo " Create Bootr bootscripts from patches on $veros..."
     patchcmd=/usr/bin/patch
     if [ ! -x $patchcmd ]; then patchcmd=/media/cryptofs/apps/usr/bin/patch; fi
@@ -53,12 +75,16 @@ create_bootr_inits(){
 remove_bootr_inits(){
     echo " Removing Bootr bootscripts from /boot/sbin ..."
     cd /boot/bootr/data/patch
-    if [ "`cat /etc/palm-build-info | grep 'OS 1.'`" != "" ]; then veros=1x; else veros=2x; fi
+    if [ "`cat /etc/palm-build-info | grep 'OS 1.'`" != "" ]; then veros=1x
+    elif [ "`cat /etc/palm-build-info | grep 'OS 2.'`" != "" ]; then veros=2x
+    else veros=3x; fi
     for init in `ls init.*.$veros.patch|sed -r "s/.($veros).patch//g"` ; do
         rm /boot/sbin/$init
         check_error "$init"
     done
 }
+
+check_hw
 
 case $1 in
     install)
@@ -77,14 +103,15 @@ case $1 in
         ;;
     uninstall)
         if [ ! -x /boot/sbin/init.bootr ]; then echo 'Bootr is not installed.'; exit; fi
+        . /boot/bootr/os/$hw/webos
         echo "Uninstalling Bootr..."
         mount -o remount,rw /boot
         restore_backup
         remove_bootr_inits
         cd /boot
-        ln -sf uImage-2.6.24-palm-joplin-3430 uImage
+        ln -sf $kernel uImage
         echo " Linking webOS kernel..."
-        check_error "Linked uImage -> uImage-2.6.24-palm-joplin-3430"
+        check_error "Linked uImage -> $kernel"
         echo "Waiting for sync disk writes..."
         sync
         mount -o remount,ro /boot
