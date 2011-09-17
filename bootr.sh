@@ -5,6 +5,8 @@ if [ -d /media/cryptofs/apps/ ]; then ifnotdebug='echo skip:'; fi
 $ifnotdebug sh /boot/bootr/bin/init.sh
 
 check_hw(){
+    evdev=event1
+    btnboot=006b00010 #Power button
     hw="`cat /proc/cpuinfo | grep Hardware | sed 's/.*: //'`"
     case $hw in
         "Sirloin OMAP3430 board")
@@ -16,6 +18,8 @@ check_hw(){
         "TENDERLOIN")
             hw=touchpad
             export HD=1
+            evdev=event0
+            btnboot=00e800010 #Center button
             ;;
         *)
             echo "Unsupported Device. Exiting..."
@@ -48,6 +52,7 @@ select_os(){
 }
 
 change_and_reboot(){
+    . /boot/bootr/os/$hw/$OS
     show_fbz $OS
     do_led center 500
     pong_fb "20 30 60 80 100 120 120 80 100 120 80 90 100 110 120 90 95 100 105 110 115 120 105 110 115 120 110 113 115 118 120" 750
@@ -103,38 +108,21 @@ show_fbz $OS
 
 sh /boot/bootr/bin/timeout.sh &
 
-if [ "$hw" = "touchpad" ]; then
-    while true;
-        do
-        event=`hexdump -e '1/1 "%.2x"' /dev/input/event0 -n 16`
-        #Home Button Released
-        if [ "`echo $event | grep HEXNUMFORTOUCHPADHOME`" != "" -o -e /media/ram/autobootr ]; then
-            . /boot/bootr/os/$hw/$OS
-            change_and_reboot
-            break
-        fi
-        #VolumeUp Button Released
-        select_os HEXNUMFORTOUCHPADVOLUP "$os_installed_rev" left
-        #VolumeDown Button Released
-        select_os HEXNUMFORTOUCHPADVOLDOWN "$os_installed" right
-    done
-else
-    while true;
-        do
-        event=`hexdump -e '1/1 "%.2x"' /dev/input/event1 -n 16`
-        #Power Button Released or MuteSwitch moved to ON
-        if [ "`echo $event | grep 006b00010`" != "" -o "`echo $event | grep 5000500010`" != "" -o -e /media/ram/autobootr ]; then
-            . /boot/bootr/os/$hw/$OS
-            change_and_reboot
-            break
-        fi
-        #VolumeUp Button Released
-        select_os 007300010 "$os_installed_rev" left
-        #VolumeDown Button Released
-        select_os 007200010 "$os_installed" right
-        #Center Button Released
-        select_os 00e800010 "$os_installed" right
-    done
-fi
+while true;
+    do
+    event=`hexdump -e '1/1 "%.2x"' /dev/input/$evdev -n 16`
+    # Boot Button Released or MuteSwitch moved to ON(on Phones)
+    # in check_hw is set $btnboot as Power(on Phones)/Center(on Touchpad)
+    if [ "`echo $event | grep $btnboot`" != "" -o "`echo $event | grep 5000500010`" != "" -o -e /media/ram/autobootr ]; then
+        change_and_reboot
+        break
+    fi
+    #VolumeUp Button Released
+    select_os 007300010 "$os_installed_rev" left
+    #VolumeDown Button Released
+    select_os 007200010 "$os_installed" right
+    #Center Button Released (only on Phones)
+    select_os 00e800010 "$os_installed" right
+done
 
 exit 0
