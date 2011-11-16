@@ -9,9 +9,11 @@ check_hw(){
         "Sirloin OMAP3630 board")
             hw=pre2
             ;;
+        "Rib")
+            hw=pre3
+            ;;
         "TENDERLOIN")
             hw=touchpad
-            HD=1
             ;;
         *)
             echo "Unsupported Device. Exiting..."

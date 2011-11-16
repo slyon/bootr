@@ -8,6 +8,9 @@ case $hw in
     "Sirloin OMAP3630 board")
         hw=pre2
         ;;
+    "Rib")
+        hw=pre3
+        ;;
     "TENDERLOIN")
         hw=touchpad
         ;;

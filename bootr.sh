@@ -4,6 +4,8 @@ if [ -d /media/cryptofs/apps/ ]; then ifnotdebug='echo skip:'; fi
 
 $ifnotdebug sh /boot/bootr/bin/init.sh
 
+rm /media/ram/autobootr ### need for timeout on touchpad
+
 check_hw(){
     evdev=event1
     btnboot=006b00010 #Power button
@@ -14,6 +16,11 @@ check_hw(){
             ;;
         "Sirloin OMAP3630 board")
             hw=pre2
+            ;;
+        "Rib")
+            hw=pre3
+            export ED=1
+            evdev=event0
             ;;
         "TENDERLOIN")
             hw=touchpad
@@ -31,9 +38,12 @@ check_hw(){
 show_fbz(){
     if [ "$HD" = "1" ]; then
         bzcat /boot/bootr/data/${1}HD.fbz > /dev/fb0
+    elif [ "$ED" = "1" ]; then
+        bzcat /boot/bootr/data/${1}ED.fbz > /dev/fb0
     else
         bzcat /boot/bootr/data/$1.fbz > /dev/fb0
     fi
+    echo 0,0 >/sys/class/graphics/fb0/pan ### need for pre3
 }
 
 select_os(){
@@ -87,7 +97,8 @@ do_led(){
 
 pong_fb(){
     for i in $1 ; do
-        if [ "$HD" = "1" ]; then i=$(($i*2)); fi
+        if [ "$HD" = "1" ]; then i=$((($i*2)-50)); fi
+        if [ "$ED" = "1" ]; then i=$(($i*2)); fi
         echo 0,$i >/sys/class/graphics/fb0/pan
         w=$2
         while [ $w -gt 0 ]; do
@@ -102,8 +113,9 @@ set_lcd(){
 
 OS=webos
 check_hw
-set_lcd 30
+set_lcd 50
 check_os_and_kernel
+
 show_fbz $OS
 
 sh /boot/bootr/bin/timeout.sh &
