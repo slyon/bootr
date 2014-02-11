@@ -127,7 +127,7 @@ case $1 in
         ;;
     *)
         echo ''
-        echo '  *** This Script will install or uninstall Bootr on your Palm Pre ***'
+        echo '  *** This Script will install or uninstall Bootr on your Palm Pre (2) or HP Veer/Pre 3/Touchpad (Go) ***'
         echo ''
         echo '  * Requirements'
         echo '     WebOS - installed on /dev/mapper/store-root'
