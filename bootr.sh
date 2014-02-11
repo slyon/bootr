@@ -22,8 +22,19 @@ check_hw(){
             export ED=1
             evdev=event0
             ;;
+        "Shank")
+            hw=veer
+            export ED=1
+            evdev=event0
+            ;;
         "TENDERLOIN")
             hw=touchpad
+            export HD=1
+            evdev=event0
+            btnboot=00e800010 #Center button
+            ;;
+        "SHORTLOIN")
+            hw=touchpadgo
             export HD=1
             evdev=event0
             btnboot=00e800010 #Center button
