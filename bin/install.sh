@@ -12,8 +12,14 @@ check_hw(){
         "Rib")
             hw=pre3
             ;;
+        "Shank")
+            hw=veer
+            ;;
         "TENDERLOIN")
             hw=touchpad
+            ;;
+        "SHORTLOIN")
+            hw=touchpadgo
             ;;
         *)
             echo "Unsupported Device. Exiting..."
