@@ -11,8 +11,14 @@ case $hw in
     "Rib")
         hw=pre3
         ;;
+    "Shank")
+        hw=veer
+        ;;
     "TENDERLOIN")
         hw=touchpad
+        ;;
+    "SHORTLOIN")
+        hw=touchpadgo
         ;;
     *)
         echo "Unsupported Device. Exiting..."
