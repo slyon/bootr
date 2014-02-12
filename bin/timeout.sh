@@ -12,6 +12,8 @@ for t in 3 2 1; do
         bzcat /boot/bootr/data/${t}HD.fbz > /dev/fb0
     elif [ "$ED" = "1" ]; then
         bzcat /boot/bootr/data/${t}ED.fbz > /dev/fb0
+    elif [ "$SDV" = "1" ]; then
+        bzcat /boot/bootr/data/${t}SDV.fbz > /dev/fb0
     else
         bzcat /boot/bootr/data/$t.fbz > /dev/fb0
     fi

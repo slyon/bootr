@@ -24,7 +24,7 @@ check_hw(){
             ;;
         "Shank")
             hw=veer
-            export ED=1
+            export SDV=1
             evdev=event0
             ;;
         "TENDERLOIN")
@@ -51,6 +51,8 @@ show_fbz(){
         bzcat /boot/bootr/data/${1}HD.fbz > /dev/fb0
     elif [ "$ED" = "1" ]; then
         bzcat /boot/bootr/data/${1}ED.fbz > /dev/fb0
+    elif [ "$SDV" = "1" ]; then
+        bzcat /boot/bootr/data/${1}SDV.fbz > /dev/fb0
     else
         bzcat /boot/bootr/data/$1.fbz > /dev/fb0
     fi
