@@ -8,16 +8,27 @@ case $hw in
     "Sirloin OMAP3630 board")
         hw=pre2
         ;;
+    "Rib")
+        hw=pre3
+        ;;
+    "Shank")
+        hw=veer
+        ;;
+    "TENDERLOIN")
+        hw=touchpad
+        ;;
+    "SHORTLOIN")
+        hw=touchpadgo
+        ;;
     *)
-        echo "Don't supported Pre model. Exiting..."
+        echo "Unsupported Device. Exiting..."
         exit
         ;;
 esac
-. /boot/bootr/bootr.os.$hw
 
 OS=$1
-kernel=`set | grep $OS= | sed -r "s/.*kernel=//" | sed 's/;.*//'`
-os_supported=`set | grep "='kernel"|sed 's/=.*//'`
+. /boot/bootr/os/$hw/$OS
+os_supported=`ls /boot/bootr/os/$hw`
 
 if [ "$OS" = "" ]; then
     echo "usage $0 [`echo $os_supported|sed -r 's/ /\|/g'`]"

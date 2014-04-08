@@ -1,9 +1,11 @@
 --- .orig/boot/sbin/init.android.bootr
 +++ /boot/sbin/init.android.bootr
-@@ -45,14 +45,42 @@
- mknod /dev/mmcblk0p2 b 179 2
- mknod /dev/mmcblk0p3 b 179 3
+@@ -57,13 +57,41 @@
+ mknod /dev/mmcblk0p14 b 179 14
+ mknod /dev/mmcblk0p15 b 179 15
  
+-lvm.static vgscan --ignorelockingfailure
+-lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-root
 +mknod /dev/loop0 b 7 0
 +mknod /dev/loop1 b 7 1
 +mknod /dev/loop2 b 7 2
@@ -15,39 +17,37 @@
 +
 +# disable kernel messages on screen
 +#echo "0" > /proc/sys/kernel/printk
-+
-+sh /bootr/bin/set-bootr.sh
-+
- lvm.static vgscan --ignorelockingfailure
--lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-root
-+lvm.static lvs /dev/store/aop >/dev/null 2>/dev/null || false
-+if [ $? -eq 0 ]; then
-+    lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-aop
  
 -# May need to say "don't update mtab" option below
 -mount -o ro /dev/mapper/store-root /realroot
-+    # May need to say "don't update mtab" option below
-+    mount -o rw /dev/mapper/store-aop /realroot
++sh /bootr/bin/set-bootr.sh
  
 -/sbin/pivot_root /realroot /realroot/boot
++lvm.static vgscan --ignorelockingfailure
++lvm.static lvs /dev/store/aot >/dev/null 2>/dev/null || false
++if [ $? -eq 0 ]; then
++    lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-aot
++
++    # May need to say "don't update mtab" option below
++    mount -o rw /dev/mapper/store-aot /realroot
++
 +    /sbin/pivot_root /realroot /realroot/boot
 +else
 +    lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-media
- 
++
 +    # May need to say "don't update mtab" option below
 +    mount -t vfat -o rw /dev/mapper/store-media /realroot
 +
 +    # mount boot.ext3 from 'usb partition'/android
-+    mount -o loop /realroot/android/boot.ext3 /realroot/android/mix
++    mount -o loop /realroot/android/boot.ext3 /realroot/android/mnt
 +
-+    /sbin/pivot_root /realroot/android/mix /realroot/android/mix/boot
++    /sbin/pivot_root /realroot/android/mnt /realroot/android/mnt/boot
 +    mount --move /boot/realroot /mnt/sdcard
 +fi
-+
+ 
  # Recommended:
  
- cd /
-@@ -68,4 +86,7 @@
+@@ -80,4 +108,7 @@
  
  export EARLY_BOOT_STOP=`date -U`
  

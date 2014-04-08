@@ -1,0 +1,11 @@
+--- .orig/boot/sbin/init.webos.bootr
++++ /boot/sbin/init.webos.bootr
+@@ -57,6 +57,8 @@
+ mknod /dev/mmcblk0p14 b 179 14
+ mknod /dev/mmcblk0p15 b 179 15
+ 
++sh /bootr/bin/set-bootr.sh
++
+ lvm.static vgscan --ignorelockingfailure
+ lvm.static lvchange -ay --ignorelockingfailure /dev/mapper/store-root
+ 

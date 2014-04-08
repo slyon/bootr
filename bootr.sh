@@ -4,7 +4,11 @@ if [ -d /media/cryptofs/apps/ ]; then ifnotdebug='echo skip:'; fi
 
 $ifnotdebug sh /boot/bootr/bin/init.sh
 
+rm /media/ram/autobootr ### need for timeout on touchpad
+
 check_hw(){
+    evdev=event1
+    btnboot=006b00010 #Power button
     hw="`cat /proc/cpuinfo | grep Hardware | sed 's/.*: //'`"
     case $hw in
         "Sirloin OMAP3430 board")
@@ -13,14 +17,46 @@ check_hw(){
         "Sirloin OMAP3630 board")
             hw=pre2
             ;;
+        "Rib")
+            hw=pre3
+            export ED=1
+            evdev=event0
+            ;;
+        "Shank")
+            hw=veer
+            export SDV=1
+            evdev=event0
+            ;;
+        "TENDERLOIN")
+            hw=touchpad
+            export HD=1
+            evdev=event0
+            btnboot=00e800010 #Center button
+            ;;
+        "SHORTLOIN")
+            hw=touchpadgo
+            export HD=1
+            evdev=event0
+            btnboot=00e800010 #Center button
+            ;;
         *)
-            echo "Unsupported Pre model. Exiting..."
+            echo "Unsupported Device. Exiting..."
+            exit
             ;;
     esac
 }
 
 show_fbz(){
+    if [ "$HD" = "1" ]; then
+        bzcat /boot/bootr/data/${1}HD.fbz > /dev/fb0
+    elif [ "$ED" = "1" ]; then
+        bzcat /boot/bootr/data/${1}ED.fbz > /dev/fb0
+    elif [ "$SDV" = "1" ]; then
+        bzcat /boot/bootr/data/${1}SDV.fbz > /dev/fb0
+    else
         bzcat /boot/bootr/data/$1.fbz > /dev/fb0
+    fi
+    echo 0,0 >/sys/class/graphics/fb0/pan ### need for pre3
 }
 
 select_os(){
@@ -39,6 +75,8 @@ select_os(){
 }
 
 change_and_reboot(){
+    . /boot/bootr/os/$hw/$OS
+    show_fbz $OS
     do_led center 500
     pong_fb "20 30 60 80 100 120 120 80 100 120 80 90 100 110 120 90 95 100 105 110 115 120 105 110 115 120 110 113 115 118 120" 750
     mount -o remount,rw /boot
@@ -72,6 +110,8 @@ do_led(){
 
 pong_fb(){
     for i in $1 ; do
+        if [ "$HD" = "1" ]; then i=$((($i*2)-50)); fi
+        if [ "$ED" = "1" ]; then i=$(($i*2)); fi
         echo 0,$i >/sys/class/graphics/fb0/pan
         w=$2
         while [ $w -gt 0 ]; do
@@ -86,16 +126,19 @@ set_lcd(){
 
 OS=webos
 check_hw
-set_lcd 30
+set_lcd 50
 check_os_and_kernel
+
 show_fbz $OS
+
+sh /boot/bootr/bin/timeout.sh &
 
 while true;
     do
-    event=`hexdump -e '1/1 "%.2x"' /dev/input/event1 -n 16`
-    #Power Button Released or MuteSwitch moved to ON
-    if [ "`echo $event | grep 006b00010`" != "" -o "`echo $event | grep 5000500010`" != "" ]; then
-        . /boot/bootr/os/$hw/$OS
+    event=`hexdump -e '1/1 "%.2x"' /dev/input/$evdev -n 16`
+    # Boot Button Released or MuteSwitch moved to ON(on Phones)
+    # in check_hw is set $btnboot as Power(on Phones)/Center(on Touchpad)
+    if [ "`echo $event | grep $btnboot`" != "" -o "`echo $event | grep 5000500010`" != "" -o -e /media/ram/autobootr ]; then
         change_and_reboot
         break
     fi
@@ -103,7 +146,7 @@ while true;
     select_os 007300010 "$os_installed_rev" left
     #VolumeDown Button Released
     select_os 007200010 "$os_installed" right
-    #Center Button Released
+    #Center Button Released (only on Phones)
     select_os 00e800010 "$os_installed" right
 done
 
